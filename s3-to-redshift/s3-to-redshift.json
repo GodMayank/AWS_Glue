@@ -1,0 +1,43 @@
+{
+  "name" : "s3-to-redshift",
+  "description" : "",
+  "role" : "arn:aws:iam::323322532370:role/glue-crawler",
+  "executionProperty" : {
+    "maxConcurrentRuns" : 1
+  },
+  "command" : {
+    "name" : "glueetl",
+    "scriptLocation" : "s3://aws-glue-assets-323322532370-ap-south-1/scripts/S3-Redshift.py",
+    "pythonVersion" : "3"
+  },
+  "defaultArguments" : {
+    "--enable-metrics" : "true",
+    "--enable-spark-ui" : "true",
+    "--spark-event-logs-path" : "s3://aws-glue-assets-323322532370-ap-south-1/sparkHistoryLogs/",
+    "--enable-job-insights" : "false",
+    "--enable-glue-datacatalog" : "true",
+    "--enable-continuous-cloudwatch-log" : "true",
+    "--job-bookmark-option" : "job-bookmark-disable",
+    "--job-language" : "python",
+    "--TempDir" : "s3://aws-glue-assets-323322532370-ap-south-1/temporary/",
+    "--JOB_NAME" : "First_Glue_Job"
+  },
+  "connections" : {
+    "connections" : [ "redshift-connection-yt" ]
+  },
+  "maxRetries" : 0,
+  "allocatedCapacity" : 2,
+  "timeout" : 1,
+  "maxCapacity" : 2.0,
+  "glueVersion" : "4.0",
+  "numberOfWorkers" : 2,
+  "workerType" : "G.1X",
+  "executionClass" : "STANDARD",
+  "codeGenConfigurationNodes" : "{\"node-1700243709178\":{\"ApplyMapping\":{\"Inputs\":[\"node-1700243622126\"],\"Mapping\":[{\"Dropped\":false,\"FromPath\":[\"id\"],\"FromType\":\"long\",\"ToKey\":\"id\",\"ToType\":\"int\"},{\"Dropped\":false,\"FromPath\":[\"date\"],\"FromType\":\"string\",\"ToKey\":\"date\",\"ToType\":\"date\"},{\"Dropped\":false,\"FromPath\":[\"product\"],\"FromType\":\"string\",\"ToKey\":\"product\",\"ToType\":\"varchar\"},{\"Dropped\":false,\"FromPath\":[\"quantity\"],\"FromType\":\"long\",\"ToKey\":\"quantity\",\"ToType\":\"int\"},{\"Dropped\":false,\"FromPath\":[\"revenue\"],\"FromType\":\"double\",\"ToKey\":\"revenue\",\"ToType\":\"decimal\"}],\"Name\":\"Change Schema\"}},\"node-1700243622126\":{\"Filter\":{\"Filters\":[{\"Negated\":false,\"Operation\":\"REGEX\",\"Values\":[{\"Type\":\"CONSTANT\",\"Value\":[\"Laptop\"]},{\"Type\":\"COLUMNEXTRACTED\",\"Value\":[\"product\"]}]}],\"Inputs\":[\"node-1700243511906\"],\"LogicalOperator\":\"AND\",\"Name\":\"Filter-S3-Data\"}},\"node-1700243777936\":{\"AmazonRedshiftTarget\":{\"Data\":{\"AccessType\":\"catalog\",\"Action\":\"append\",\"AdvancedOptions\":[],\"CatalogDatabase\":{\"Description\":\"-\",\"Label\":\"region-sales-catalog-db\",\"Value\":\"region-sales-catalog-db\"},\"CatalogRedshiftSchema\":\"gds_sales\",\"CatalogRedshiftTable\":\"sales_new\",\"CatalogTable\":{\"Description\":\"-\",\"Label\":\"dev_gds_sales_sales_new\",\"Value\":\"dev_gds_sales_sales_new\"},\"CrawlerConnection\":\"redshift-connection-yt\",\"MergeAction\":\"simple\",\"MergeWhenMatched\":\"update\",\"MergeWhenNotMatched\":\"insert\",\"SelectedColumns\":[],\"SourceType\":\"table\",\"StagingTable\":\"gds_sales.sales_new_temp_cdefe3\",\"TableSchema\":[{\"Description\":\"INTEGER\",\"Label\":\"id\",\"Value\":\"id\"},{\"Description\":\"DATE\",\"Label\":\"date\",\"Value\":\"date\"},{\"Description\":\"VARCHAR\",\"Label\":\"product\",\"Value\":\"product\"},{\"Description\":\"INTEGER\",\"Label\":\"quantity\",\"Value\":\"quantity\"},{\"Description\":\"DECIMAL\",\"Label\":\"revenue\",\"Value\":\"revenue\"}],\"TempDir\":\"s3://aws-glue-assets-323322532370-ap-south-1/temporary/\",\"Upsert\":false},\"Inputs\":[\"node-1700243709178\"],\"Name\":\"Amazon Redshift\"}},\"node-1700243511906\":{\"S3CatalogSource\":{\"AdditionalOptions\":{},\"Database\":\"region-sales-catalog-db\",\"Name\":\"S3-Gadgets-Input\",\"PartitionPredicate\":\"\",\"Table\":\"gadets_tblinput\"}}}",
+  "sourceControlDetails" : {
+    "provider" : "GITHUB",
+    "repository" : "AWS_Glue",
+    "branch" : "develop",
+    "folder" : "s3-to-redshift"
+  }
+}
